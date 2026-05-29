@@ -1,0 +1,6 @@
+# Ignore local agent and scratch/temp directories
+.agent/
+.temp/
+*.log
+.DS_Store
+Thumbs.db
