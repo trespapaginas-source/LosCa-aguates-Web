@@ -349,14 +349,16 @@
               }, 100);
             } else {
               // Estadías normales (rango)
-              if (!selectionStart || (selectionStart && selectionEnd)) {
+              if (!selectionStart) {
                 selectionStart = cellDate;
                 selectionEnd = null;
-              } else if (selectionStart && !selectionEnd) {
-                if (cellDate.getTime() < selectionStart.getTime()) {
-                  selectionStart = cellDate;
-                } else if (cellDate.getTime() === selectionStart.getTime()) {
+              } else {
+                if (cellDate.getTime() === selectionStart.getTime()) {
                   selectionStart = null;
+                  selectionEnd = null;
+                } else if (cellDate.getTime() < selectionStart.getTime()) {
+                  selectionStart = cellDate;
+                  selectionEnd = null;
                 } else {
                   selectionEnd = cellDate;
                 }
@@ -531,24 +533,42 @@
     const checkinInput = document.getElementById('booking-checkin');
     const checkoutInput = document.getElementById('booking-checkout');
   
-    if (checkinField && checkinInput) {
+    if (checkinField) {
       checkinField.addEventListener('click', (e) => {
-        if (e.target.id !== 'booking-checkin') {
-          checkinInput.focus();
-          if (typeof checkinInput.showPicker === 'function') {
-            checkinInput.showPicker();
-          }
+        e.preventDefault();
+        const calendarSec = document.getElementById('calendario');
+        if (calendarSec) {
+          calendarSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    if (checkinInput) {
+      checkinInput.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        const calendarSec = document.getElementById('calendario');
+        if (calendarSec) {
+          calendarSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
     }
   
-    if (checkoutField && checkoutInput) {
+    if (checkoutField) {
       checkoutField.addEventListener('click', (e) => {
-        if (e.target.id !== 'booking-checkout') {
-          checkoutInput.focus();
-          if (typeof checkoutInput.showPicker === 'function') {
-            checkoutInput.showPicker();
-          }
+        e.preventDefault();
+        const calendarSec = document.getElementById('calendario');
+        if (calendarSec) {
+          calendarSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    if (checkoutInput) {
+      checkoutInput.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        const calendarSec = document.getElementById('calendario');
+        if (calendarSec) {
+          calendarSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
     }
