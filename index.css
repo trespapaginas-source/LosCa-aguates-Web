@@ -532,6 +532,12 @@ a {
   gap: 12px;
 }
 
+@media (min-width: 769px) {
+  .booking-bar.booking-bar--compact {
+    grid-template-columns: 1.2fr 1.5fr 1.2fr auto;
+  }
+}
+
 .booking-field {
   display: flex;
   flex-direction: column;

@@ -694,13 +694,24 @@
         </div>
 
         <!-- Selector de Fecha (Llegada/Día) -->
-        <div class="express-form-group">
-          <label for="express-date" class="express-form-label">¿Qué día?</label>
+        <div class="express-form-group" id="express-field-checkin">
+          <label for="express-date" class="express-form-label" id="express-date-label">¿Cuándo llegas? (Llegada)</label>
           <div class="express-input-wrapper">
             <svg class="express-input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
             </svg>
             <input type="date" id="express-date" class="express-input-date" required>
+          </div>
+        </div>
+
+        <!-- Selector de Fecha de Salida (Solo para Hospedaje) -->
+        <div class="express-form-group" id="express-field-checkout" style="display: none;">
+          <label for="express-date-checkout" class="express-form-label">¿Hasta qué día? (Salida)</label>
+          <div class="express-input-wrapper">
+            <svg class="express-input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+            </svg>
+            <input type="date" id="express-date-checkout" class="express-input-date">
           </div>
         </div>
 
