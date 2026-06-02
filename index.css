@@ -29,10 +29,7 @@
   box-sizing: border-box; 
 }
 
-html, body { 
-  overflow-x: hidden; 
-  width: 100%; 
-  position: relative; 
+html {
   scroll-behavior: smooth;
 }
 
@@ -41,6 +38,9 @@ section[id], header[id] {
 }
 
 body { 
+  overflow-x: hidden; 
+  width: 100%; 
+  position: relative; 
   font-family: var(--font-sans); 
   background-color: var(--color-bg-light); 
   color: var(--color-text); 
