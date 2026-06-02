@@ -639,14 +639,153 @@
     // Sincronizar el estado inicial al cargar la página
   
     // Sincronizar el input inicial al cargar la página
-    updateCalendarOutputs();
+  updateCalendarOutputs();
+
+  // ==========================================
+  // 9. LÓGICA DE COTIZACIÓN EXPRESS (FAB & MODAL)
+  // ==========================================
+  const expressFab = document.getElementById('express-booking-fab');
+  const expressCard = document.getElementById('express-booking-card');
+  const expressClose = document.getElementById('express-card-close');
+  const expressForm = document.getElementById('express-booking-form');
+  const expressPlanBtns = document.querySelectorAll('.express-plan-btn');
+  const expressDateInput = document.getElementById('express-date');
+  const expressGuestsVal = document.getElementById('express-guests-val');
+  const expressGuestDec = document.getElementById('express-guest-dec');
+  const expressGuestInc = document.getElementById('express-guest-inc');
+
+  if (expressFab && expressCard && expressClose) {
+    let expressPlan = 'Hospedaje';
+    let expressGuests = 5;
+
+    // Establecer fecha mínima para el input date (hoy)
+    if (expressDateInput) {
+      const todayStr = new Date().toISOString().split('T')[0];
+      expressDateInput.min = todayStr;
+    }
+
+    // Alternar visibilidad de la tarjeta
+    const toggleExpressCard = () => {
+      const isOpen = expressCard.classList.contains('is-open');
+      if (isOpen) {
+        expressCard.classList.remove('is-open');
+        expressCard.setAttribute('aria-hidden', 'true');
+      } else {
+        expressCard.classList.add('is-open');
+        expressCard.setAttribute('aria-hidden', 'false');
+        // Auto-enfocar el input de fecha al abrir
+        setTimeout(() => expressDateInput && expressDateInput.focus(), 150);
+      }
+    };
+
+    expressFab.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleExpressCard();
+    });
+
+    expressClose.addEventListener('click', (e) => {
+      e.stopPropagation();
+      expressCard.classList.remove('is-open');
+      expressCard.setAttribute('aria-hidden', 'true');
+    });
+
+    // Cerrar al hacer clic fuera del contenedor
+    document.addEventListener('click', (e) => {
+      if (expressCard.classList.contains('is-open')) {
+        if (!expressCard.contains(e.target) && !expressFab.contains(e.target)) {
+          expressCard.classList.remove('is-open');
+          expressCard.setAttribute('aria-hidden', 'true');
+        }
+      }
+    });
+
+    // Detener propagación de clics dentro de la tarjeta
+    expressCard.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    // Manejar botones de plan
+    expressPlanBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        expressPlanBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        expressPlan = btn.dataset.plan;
+
+        // Ajustar límite de huéspedes según plan
+        const maxLimit = (expressPlan === 'Pasadía') ? 130 : (expressPlan === 'Eventos') ? 200 : 54;
+        if (expressGuests > maxLimit) {
+          expressGuests = maxLimit;
+          if (expressGuestsVal) expressGuestsVal.textContent = expressGuests;
+        }
+      });
+    });
+
+    // Manejar decremento de huéspedes
+    if (expressGuestDec) {
+      expressGuestDec.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (expressGuests > 1) {
+          expressGuests--;
+          if (expressGuestsVal) expressGuestsVal.textContent = expressGuests;
+        }
+      });
+    }
+
+    // Manejar incremento de huéspedes
+    if (expressGuestInc) {
+      expressGuestInc.addEventListener('click', (e) => {
+        e.preventDefault();
+        const maxLimit = (expressPlan === 'Pasadía') ? 130 : (expressPlan === 'Eventos') ? 200 : 54;
+        if (expressGuests < maxLimit) {
+          expressGuests++;
+          if (expressGuestsVal) expressGuestsVal.textContent = expressGuests;
+        }
+      });
+    }
+
+    // Manejar envío del formulario
+    if (expressForm) {
+      expressForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const rawDate = expressDateInput ? expressDateInput.value : '';
+        if (!rawDate) return;
+
+        // Formatear la fecha a un formato legible
+        const dateParts = rawDate.split('-');
+        const selectedDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+        const dayName = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"][selectedDate.getDay()];
+        const monthName = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"][selectedDate.getMonth()];
+        const formattedDateText = `${dayName} ${selectedDate.getDate()} de ${monthName} de ${selectedDate.getFullYear()}`;
+
+        // Calcular presupuesto estimado
+        let budgetText = '';
+        const numGuests = expressGuests;
+        if (expressPlan === 'Pasadía') {
+          const total = numGuests * 35000;
+          budgetText = `\n💰 Valor Estimado: $${total.toLocaleString('es-CO')} COP ($35.000 por persona)`;
+        } else if (expressPlan === 'Hospedaje') {
+          const total = numGuests * 75000; // Cotización por 1 noche inicial en express
+          budgetText = `\n💰 Valor Estimado: $${total.toLocaleString('es-CO')} COP ($75.000 por persona / noche)`;
+        }
+
+        const message = `¡Hola Cabaña Los Cañaguates! 🌴✨\nMe gustaría cotizar un servicio rápido con los siguientes detalles:\n\n📅 Plan: ${expressPlan}\n📆 Fecha seleccionada: ${formattedDateText}\n👥 Cantidad de Personas: ${numGuests} personas${budgetText}\n\nQuedo atento a la disponibilidad. ¡Muchas gracias!`;
+
+        window.open(`https://api.whatsapp.com/send/?phone=573103781745&text=${encodeURIComponent(message)}`, '_blank');
+        
+        // Cerrar modal
+        expressCard.classList.remove('is-open');
+        expressCard.setAttribute('aria-hidden', 'true');
+      });
+    }
   }
-  
-  // Iniciar aplicación
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initApp);
-  } else {
-    initApp();
-  }
+}
+
+// Iniciar aplicación
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 
 })();

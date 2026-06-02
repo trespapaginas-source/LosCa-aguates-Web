@@ -36,6 +36,10 @@ html, body {
   scroll-behavior: smooth;
 }
 
+section[id], header[id] {
+  scroll-margin-top: 90px;
+}
+
 body { 
   font-family: var(--font-sans); 
   background-color: var(--color-bg-light); 
@@ -1985,4 +1989,322 @@ a {
 
 .lightbox-close:hover { 
   opacity: 1; 
+}
+
+/* Botón Flotante y Tarjeta de Cotización Express */
+.express-booking-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  font-family: var(--font-sans);
+}
+
+.express-booking-fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 30px rgba(10, 92, 67, 0.35);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  z-index: 1001;
+}
+
+.express-booking-fab:hover {
+  transform: scale(1.08) translateY(-3px);
+  background-color: #084d38;
+  box-shadow: 0 12px 35px rgba(10, 92, 67, 0.45);
+}
+
+.express-booking-fab:active {
+  transform: scale(0.95);
+}
+
+.express-booking-fab .fab-icon {
+  width: 26px;
+  height: 26px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  transition: transform 0.3s ease;
+}
+
+.express-booking-fab:hover .fab-icon {
+  transform: rotate(10deg);
+}
+
+.fab-pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  opacity: 0.4;
+  z-index: -1;
+  animation: fabPulse 2.5s infinite;
+}
+
+@keyframes fabPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.express-booking-card {
+  position: absolute;
+  bottom: 72px;
+  right: 0;
+  width: 340px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 16px;
+  box-shadow: 0 15px 40px -10px rgba(15, 23, 42, 0.18);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.express-booking-card.is-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.express-card-header {
+  padding: 20px 24px;
+  background-color: rgba(10, 92, 67, 0.03);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.express-card-header h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 2px 0;
+}
+
+.express-card-header p {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.express-card-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  line-height: 1;
+  padding: 0;
+}
+
+.express-card-close:hover {
+  background-color: rgba(30, 41, 59, 0.08);
+  color: var(--color-text);
+}
+
+.express-card-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.express-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.express-form-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-primary);
+}
+
+.express-plan-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background-color: rgba(226, 232, 240, 0.4);
+  border-radius: 8px;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+}
+
+.express-plan-btn {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  padding: 8px 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.express-plan-btn:hover {
+  color: var(--color-text);
+}
+
+.express-plan-btn.active {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: 0 4px 10px rgba(10, 92, 67, 0.15);
+}
+
+.express-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.express-input-icon {
+  position: absolute;
+  left: 14px;
+  width: 16px;
+  height: 16px;
+  stroke: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.express-input-date {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px 0 38px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+  background-color: var(--color-white);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.express-input-date:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(10, 92, 67, 0.08);
+}
+
+.express-guests-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  height: 44px;
+  padding: 0 6px;
+  background-color: var(--color-white);
+}
+
+.express-step-btn {
+  background: none;
+  border: 1px solid var(--color-border);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  transition: all 0.2s ease;
+}
+
+.express-step-btn:hover {
+  background-color: var(--color-text);
+  color: var(--color-white);
+  border-color: var(--color-text);
+}
+
+.express-guests-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.express-submit-btn {
+  height: 48px;
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: var(--color-white);
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.express-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+  filter: brightness(1.05);
+}
+
+.express-submit-btn:active {
+  transform: translateY(0);
+}
+
+.express-submit-btn .whatsapp-icon {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 480px) {
+  .express-booking-container {
+    bottom: 16px;
+    right: 16px;
+  }
+  .express-booking-card {
+    position: fixed;
+    bottom: 84px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+  }
 }
