@@ -83,8 +83,41 @@
     if (currentGuests > maxCapacity) currentGuests = maxCapacity;
     
     const valEl = document.getElementById('booking-guests-val');
-    if (valEl) valEl.textContent = currentGuests;
+    if (valEl) {
+      if (valEl.tagName === 'INPUT') {
+        valEl.value = currentGuests;
+      } else {
+        valEl.textContent = currentGuests;
+      }
+    }
+    updateCalendarOutputs();
   };
+
+  // Manejar entrada manual en el input de personas del booking bar
+  const bookingGuestsVal = document.getElementById('booking-guests-val');
+  if (bookingGuestsVal && bookingGuestsVal.tagName === 'INPUT') {
+    bookingGuestsVal.addEventListener('input', () => {
+      let val = parseInt(bookingGuestsVal.value);
+      if (isNaN(val)) return;
+      const maxCapacity = (selectedPlan === 'Pasadía') ? 130 : 54;
+      if (val < 1) val = 1;
+      if (val > maxCapacity) val = maxCapacity;
+      
+      currentGuests = val;
+      updateCalendarOutputs();
+    });
+    
+    bookingGuestsVal.addEventListener('blur', () => {
+      let val = parseInt(bookingGuestsVal.value);
+      if (isNaN(val) || val < 1) val = 5;
+      const maxCapacity = (selectedPlan === 'Pasadía') ? 130 : 54;
+      if (val > maxCapacity) val = maxCapacity;
+      
+      currentGuests = val;
+      bookingGuestsVal.value = currentGuests;
+      updateCalendarOutputs();
+    });
+  }
   
   // ==========================================
   // 4. FUNCIÓN PARA ACTUALIZAR SALIDAS Y FORMULARIOS
@@ -122,10 +155,14 @@
     const maxCapacity = (selectedPlan === 'Pasadía') ? 130 : 54;
     const valEl = document.getElementById('booking-guests-val');
     if (valEl) {
-      let guests = parseInt(valEl.textContent) || 5;
+      let guests = parseInt(valEl.value || valEl.textContent) || 5;
       if (guests > maxCapacity) {
         guests = maxCapacity;
-        valEl.textContent = guests;
+        if (valEl.tagName === 'INPUT') {
+          valEl.value = guests;
+        } else {
+          valEl.textContent = guests;
+        }
         currentGuests = guests; // Sincroniza la variable global
       }
     }
@@ -174,7 +211,7 @@
     // Habilitar o deshabilitar botón del calendario principal con enlace dinámico de WhatsApp
     if (btnCotizar) {
       if (selectionStart && selectionEnd) {
-        const guests = document.getElementById('booking-guests-val') ? document.getElementById('booking-guests-val').textContent.trim() : '5';
+        const guests = document.getElementById('booking-guests-val') ? (document.getElementById('booking-guests-val').value || document.getElementById('booking-guests-val').textContent).trim() : '5';
         let dateStr = '';
         if (selectionStart.getTime() === selectionEnd.getTime()) {
           dateStr = formatFull(selectionStart);
@@ -633,7 +670,7 @@
     if (bookingSubmitBtn) {
       bookingSubmitBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        const guests = document.getElementById('booking-guests-val') ? document.getElementById('booking-guests-val').textContent.trim() : '5';
+        const guests = document.getElementById('booking-guests-val') ? (document.getElementById('booking-guests-val').value || document.getElementById('booking-guests-val').textContent).trim() : '5';
         let dateStr = 'Por definir';
         if (selectionStart && selectionEnd) {
           const formatFull = (d) => `${d.getDate()} ${monthShortNames[d.getMonth()]}`;
@@ -805,7 +842,13 @@
           const maxLimit = (expressPlan === 'Pasadía') ? 130 : (expressPlan === 'Eventos') ? 200 : 54;
           if (expressGuests > maxLimit) {
             expressGuests = maxLimit;
-            if (expressGuestsVal) expressGuestsVal.textContent = expressGuests;
+            if (expressGuestsVal) {
+              if (expressGuestsVal.tagName === 'INPUT') {
+                expressGuestsVal.value = expressGuests;
+              } else {
+                expressGuestsVal.textContent = expressGuests;
+              }
+            }
           }
 
           // Mostrar/ocultar fecha de salida y cambiar labels
@@ -832,7 +875,13 @@
           e.preventDefault();
           if (expressGuests > 1) {
             expressGuests--;
-            if (expressGuestsVal) expressGuestsVal.textContent = expressGuests;
+            if (expressGuestsVal) {
+              if (expressGuestsVal.tagName === 'INPUT') {
+                expressGuestsVal.value = expressGuests;
+              } else {
+                expressGuestsVal.textContent = expressGuests;
+              }
+            }
           }
         });
       }
@@ -844,8 +893,35 @@
           const maxLimit = (expressPlan === 'Pasadía') ? 130 : (expressPlan === 'Eventos') ? 200 : 54;
           if (expressGuests < maxLimit) {
             expressGuests++;
-            if (expressGuestsVal) expressGuestsVal.textContent = expressGuests;
+            if (expressGuestsVal) {
+              if (expressGuestsVal.tagName === 'INPUT') {
+                expressGuestsVal.value = expressGuests;
+              } else {
+                expressGuestsVal.textContent = expressGuests;
+              }
+            }
           }
+        });
+      }
+
+      // Manejar escritura manual en expressGuestsVal
+      if (expressGuestsVal && expressGuestsVal.tagName === 'INPUT') {
+        expressGuestsVal.addEventListener('input', () => {
+          let val = parseInt(expressGuestsVal.value);
+          if (isNaN(val)) return;
+          const maxLimit = (expressPlan === 'Pasadía') ? 130 : (expressPlan === 'Eventos') ? 200 : 54;
+          if (val < 1) val = 1;
+          if (val > maxLimit) val = maxLimit;
+          expressGuests = val;
+        });
+
+        expressGuestsVal.addEventListener('blur', () => {
+          let val = parseInt(expressGuestsVal.value);
+          const maxLimit = (expressPlan === 'Pasadía') ? 130 : (expressPlan === 'Eventos') ? 200 : 54;
+          if (isNaN(val) || val < 1) val = 5;
+          if (val > maxLimit) val = maxLimit;
+          expressGuests = val;
+          expressGuestsVal.value = expressGuests;
         });
       }
 

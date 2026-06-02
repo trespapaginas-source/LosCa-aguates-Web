@@ -1752,7 +1752,7 @@ a {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     box-sizing: border-box;
     transition: all var(--transition-fast);
     min-height: 56px;
@@ -1768,9 +1768,15 @@ a {
     font-size: 10px;
   }
 
+  .booking-field .booking-label-wrap {
+    justify-content: center;
+    width: 100%;
+  }
+
   .booking-field .booking-input,
   .booking-field .booking-input-select {
-    text-align: left;
+    text-align: center;
+    text-align-last: center;
     max-width: 100%;
     margin-top: 4px;
     font-size: 14px;
@@ -1779,16 +1785,18 @@ a {
   }
 
   .booking-field .booking-input-select {
-    background-position: right center;
+    background-position: calc(50% + 50px) center;
     padding-right: 20px;
   }
 
   .booking-field .booking-stepper {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 12px;
     min-height: 24px;
     margin-top: 4px;
+    width: 100%;
   }
   
   .booking-btn {
@@ -2036,8 +2044,7 @@ a {
 .express-booking-fab .fab-icon {
   width: 26px;
   height: 26px;
-  stroke: currentColor;
-  stroke-width: 1.8;
+  fill: currentColor;
   transition: transform 0.3s ease;
 }
 
@@ -2159,6 +2166,8 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--color-primary);
+  text-align: center;
+  width: 100%;
 }
 
 .express-plan-selector {
@@ -2211,7 +2220,7 @@ a {
 .express-input-date {
   width: 100%;
   height: 44px;
-  padding: 0 14px 0 38px;
+  padding: 0 14px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
   font-family: var(--font-sans);
@@ -2221,6 +2230,8 @@ a {
   background-color: var(--color-white);
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  text-align: center;
+  text-align-last: center;
 }
 
 .express-input-date:focus {
@@ -2231,12 +2242,15 @@ a {
 .express-guests-stepper {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 16px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
   height: 44px;
   padding: 0 6px;
   background-color: var(--color-white);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .express-step-btn {
@@ -2265,6 +2279,26 @@ a {
   font-size: 14px;
   font-weight: 600;
   color: var(--color-text);
+}
+
+/* Ocultar botones de incremento/decremento nativos para inputs de cantidad de personas */
+.booking-guests-input::-webkit-outer-spin-button,
+.booking-guests-input::-webkit-inner-spin-button,
+.express-guests-input::-webkit-outer-spin-button,
+.express-guests-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.booking-guests-input,
+.express-guests-input {
+  -moz-appearance: textfield;
+  border: none;
+  background: transparent;
+  width: 40px;
+  text-align: center;
+  outline: none;
+  font-family: inherit;
 }
 
 .express-submit-btn {
