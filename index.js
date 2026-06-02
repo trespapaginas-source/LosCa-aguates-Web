@@ -980,17 +980,13 @@
         });
       }
       // ==========================================
-      // 10. CARGA DINÁMICA DEL TOUR VIRTUAL 360°
+      // 10. PORTADA INTERACTIVA DEL TOUR VIRTUAL 360°
       // ==========================================
       const tourCover = document.getElementById('tour-cover');
-      const tourIframe = document.getElementById('tour-iframe');
       const btnStartTour = document.getElementById('btn-start-tour');
 
       const startTour = () => {
-        if (tourIframe && tourCover) {
-          if (!tourIframe.src && tourIframe.dataset.src) {
-            tourIframe.src = tourIframe.dataset.src;
-          }
+        if (tourCover) {
           tourCover.classList.add('fade-out');
         }
       };

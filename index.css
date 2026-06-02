@@ -1681,11 +1681,26 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('assets/img/casa-jardin-camino.webp');
+  cursor: pointer;
+  overflow: hidden;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s ease;
+}
+
+.tour-cover-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('assets/img/entrada-jardin-porton.webp');
   background-size: cover;
   background-position: center;
-  cursor: pointer;
-  transition: opacity 0.5s ease, visibility 0.5s ease;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1;
+}
+
+.tour-cover:hover .tour-cover-bg {
+  transform: scale(1.05);
 }
 
 .tour-cover-overlay {
@@ -1694,12 +1709,13 @@ a {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(10, 92, 67, 0.4) 0%, rgba(0, 0, 0, 0.75) 100%);
+  background: radial-gradient(circle, rgba(10, 92, 67, 0.3) 0%, rgba(0, 0, 0, 0.75) 100%);
   transition: background 0.3s ease;
+  z-index: 2;
 }
 
 .tour-cover:hover .tour-cover-overlay {
-  background: radial-gradient(circle, rgba(10, 92, 67, 0.3) 0%, rgba(0, 0, 0, 0.85) 100%);
+  background: radial-gradient(circle, rgba(10, 92, 67, 0.25) 0%, rgba(0, 0, 0, 0.85) 100%);
 }
 
 .tour-cover-content {
