@@ -979,6 +979,31 @@
           expressCard.setAttribute('aria-hidden', 'true');
         });
       }
+      // ==========================================
+      // 10. CARGA DINÁMICA DEL TOUR VIRTUAL 360°
+      // ==========================================
+      const tourCover = document.getElementById('tour-cover');
+      const tourIframe = document.getElementById('tour-iframe');
+      const btnStartTour = document.getElementById('btn-start-tour');
+
+      const startTour = () => {
+        if (tourIframe && tourCover) {
+          if (!tourIframe.src && tourIframe.dataset.src) {
+            tourIframe.src = tourIframe.dataset.src;
+          }
+          tourCover.classList.add('fade-out');
+        }
+      };
+
+      if (tourCover) {
+        tourCover.addEventListener('click', startTour);
+      }
+      if (btnStartTour) {
+        btnStartTour.addEventListener('click', (e) => {
+          e.stopPropagation();
+          startTour();
+        });
+      }
     }
   }
 // Iniciar aplicación

@@ -194,9 +194,9 @@
       </div>
       <div class="experience-text reveal delay-2">
         <span class="eyebrow">La Propuesta</span>
-        <h2 class="section-title text-serif-display">Tu espacio de recreo y descanso en total exclusividad.</h2>
-        <p>A diferencia de los clubes sociales públicos o centros vacacionales con aglomeraciones, en Cabaña Los Cañaguates alquilamos todo el espacio únicamente para tu grupo. Desde nuestra piscina refrescante hasta la cancha de fútbol y el kiosco con mesa de billar, cada rincón campestre será tuyo.</p>
-        <p>Un ambiente verde, fresco y natural rodeado de árboles frutales locales y sombra reconfortante, perfecto para desconectar de la rutina de la ciudad y gozar de un asado espectacular con total tranquilidad.</p>
+        <h2 class="section-title text-serif-display">Tu refugio campestre privado y exclusivo.</h2>
+        <p>Disfruta de una cabaña campestre totalmente privada solo para tu grupo. Aquí todo el espacio es tuyo: relájate en nuestra piscina, juega un partido en la cancha de fútbol o diviértete en el kiosco con billar.</p>
+        <p>Un rincón verde rodeado de árboles frutales y sombra fresca, perfecto para desconectarse de la rutina y compartir un asado espectacular en total tranquilidad.</p>
         <br>
         <a href="#servicios" class="link-underline">Ver planes y tarifas</a>
       </div>
@@ -341,9 +341,25 @@
       </div>
       
       <div class="tour-360-wrapper">
-        <!-- REEMPLAZAR EL SRC DE ESTE IFRAME CON EL ENLACE DEL TOUR 360 REAL -->
+        <div class="tour-cover" id="tour-cover">
+          <div class="tour-cover-overlay"></div>
+          <div class="tour-cover-content">
+            <div class="tour-360-badge">
+              <span>360°</span>
+            </div>
+            <h3 class="tour-cover-title">Recorrido Virtual 360°</h3>
+            <p class="tour-cover-desc">Toca o haz clic para explorar la piscina, las habitaciones y las zonas sociales de forma interactiva.</p>
+            <button type="button" class="btn btn-solid btn-green-bg tour-cover-btn" id="btn-start-tour">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 14px; height: 14px; margin-right: 6px;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+              </svg>
+              Iniciar Recorrido
+            </button>
+          </div>
+        </div>
         <iframe 
-          src="https://tour.panoee.net/6a1b6d16828c2418511ce2ad" 
+          id="tour-iframe"
+          data-src="https://tour.panoee.net/6a1b6d16828c2418511ce2ad" 
           title="Tour Virtual 360 Cabaña Los Cañaguates" 
           allowfullscreen 
           loading="lazy">
