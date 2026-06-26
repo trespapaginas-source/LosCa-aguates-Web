@@ -25,7 +25,8 @@
   let selectedPlan = 'Hospedaje'; // Por defecto, el primer tab activo
   
   const calendarRenderFns = [];
-  const syncBlockedDates = new Set();
+  const calendarRebuildFns = [];
+  let bookedEvents = [];
   const todayDate = new Date();
   todayDate.setHours(0, 0, 0, 0);
   
@@ -33,15 +34,6 @@
   const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
   const monthShortNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
   const dayNames = ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"];
-  
-  // Inicialización de fechas bloqueadas (fines de semana + algunos días de ejemplo)
-  for (let i = 0; i < 60; i++) {
-    const d = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() + i);
-    // Bloquear fines de semana (Sábado=6, Domingo=0) y algunos días específicos simulados
-    if (d.getDay() === 0 || d.getDay() === 6 || i === 12 || i === 25 || i === 41) {
-      syncBlockedDates.add(new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0).getTime());
-    }
-  }
   
   // ==========================================
   // 2. FUNCIÓN PARA COMPILAR EL PLAN DESDE EL BOTÓN / TABS
@@ -367,7 +359,7 @@
         }
         if (cellDate.getTime() < todayDate.getTime()) {
           dayEl.classList.add('past');
-        } else if (syncBlockedDates.has(cellDate.getTime())) {
+        } else if (isDateBooked(cellDate)) {
           dayEl.classList.add('blocked');
         } else {
           // Evento de clic sobre días disponibles
@@ -435,6 +427,10 @@
     // Registrar función de actualización
     calendarRenderFns.push(() => {
       updateCalendarSelection(calRoot);
+    });
+
+    calendarRebuildFns.push(() => {
+      renderInstance();
     });
   
     renderInstance();
@@ -562,6 +558,7 @@
   
     // Inicializar Calendario
     buildCalendarInstance('custom-calendar-root');
+    fetchBookedEvents();
   
     // Configuración de la barra de reserva (Booking Bar) clicks para desplazar al calendario
     const checkinField = document.getElementById('booking-field-checkin');
@@ -1002,6 +999,80 @@
       }
     }
   }
+
+  // ==========================================
+  // 11. SINCRONIZACIÓN Y PARSEO DEL CALENDARIO DE GOOGLE (iCAL)
+  // ==========================================
+  async function fetchBookedEvents() {
+    const targetUrl = 'https://calendar.google.com/calendar/ical/canaguates228%40gmail.com/public/basic.ics?t=' + new Date().getTime();
+    const proxyUrl = 'https://corsproxy.io/?' + targetUrl; // Sin encodeURIComponent para evitar errores del proxy
+    try {
+      const response = await fetch(proxyUrl);
+      if (!response.ok) throw new Error('No se pudo obtener el calendario.');
+      const text = await response.text();
+      bookedEvents = parseICal(text);
+      calendarRebuildFns.forEach(fn => fn());
+    } catch (error) {
+      console.error('Error al sincronizar el calendario:', error);
+    }
+  }
+
+  function isDateBooked(dateObj) {
+    const dayStart = new Date(dateObj);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(dayStart);
+    dayEnd.setDate(dayEnd.getDate() + 1);
+
+    return bookedEvents.some(event => {
+      const eventStart = new Date(event.start);
+      const eventEnd = new Date(event.end);
+      return eventStart < dayEnd && eventEnd > dayStart;
+    });
+  }
+
+  function parseICal(icalText) {
+    const lines = icalText.split(/\r?\n/);
+    const events = [];
+    let currentEvent = null;
+
+    for (let line of lines) {
+      if (line.startsWith('BEGIN:VEVENT')) {
+        currentEvent = {};
+      } else if (line.startsWith('END:VEVENT')) {
+        if (currentEvent && currentEvent.start && currentEvent.end) {
+          events.push(currentEvent);
+        }
+        currentEvent = null;
+      } else if (currentEvent) {
+        if (line.startsWith('DTSTART')) {
+          const idx = line.indexOf(':');
+          const val = line.substring(idx + 1);
+          currentEvent.start = parseICalDate(val);
+        } else if (line.startsWith('DTEND')) {
+          const idx = line.indexOf(':');
+          const val = line.substring(idx + 1);
+          currentEvent.end = parseICalDate(val);
+        }
+      }
+    }
+    return events;
+  }
+
+  function parseICalDate(icalStr) {
+    const cleanStr = icalStr.replace(/[^0-9T]/g, '');
+    const y = parseInt(cleanStr.substring(0, 4));
+    const m = parseInt(cleanStr.substring(4, 6)) - 1;
+    const d = parseInt(cleanStr.substring(6, 8));
+    if (cleanStr.includes('T')) {
+      const h = parseInt(cleanStr.substring(9, 11)) || 0;
+      const min = parseInt(cleanStr.substring(11, 13)) || 0;
+      const s = parseInt(cleanStr.substring(13, 15)) || 0;
+      return new Date(Date.UTC(y, m, d, h, min, s));
+    } else {
+      return new Date(y, m, d, 0, 0, 0);
+    }
+  }
+
 // Iniciar aplicación
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initApp);
