@@ -1007,9 +1007,11 @@
     const calendarUrl = 'https://calendar.google.com/calendar/ical/canaguates228%40gmail.com/public/basic.ics';
 
     // Orden de prioridad para proxies CORS:
-    // 1. corsproxy.io (URL cruda, SIN encodeURIComponent)
-    // 2. allorigins.win (URL codificada como query param)
+    // 1. Cloudflare Pages Function proxy (nativo en producción)
+    // 2. corsproxy.io (URL cruda, SIN encodeURIComponent)
+    // 3. allorigins.win (URL codificada como query param)
     const proxies = [
+      '/api/calendar-proxy',
       'https://corsproxy.io/?' + calendarUrl,
       'https://api.allorigins.win/raw?url=' + encodeURIComponent(calendarUrl),
     ];
