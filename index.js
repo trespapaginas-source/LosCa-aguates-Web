@@ -1004,17 +1004,38 @@
   // 11. SINCRONIZACIÓN Y PARSEO DEL CALENDARIO DE GOOGLE (iCAL)
   // ==========================================
   async function fetchBookedEvents() {
-    const targetUrl = 'https://calendar.google.com/calendar/ical/canaguates228%40gmail.com/public/basic.ics?t=' + new Date().getTime();
-    const proxyUrl = 'https://corsproxy.io/?' + targetUrl; // Sin encodeURIComponent para evitar errores del proxy
-    try {
-      const response = await fetch(proxyUrl);
-      if (!response.ok) throw new Error('No se pudo obtener el calendario.');
-      const text = await response.text();
-      bookedEvents = parseICal(text);
-      calendarRebuildFns.forEach(fn => fn());
-    } catch (error) {
-      console.error('Error al sincronizar el calendario:', error);
+    const calendarUrl = 'https://calendar.google.com/calendar/ical/canaguates228%40gmail.com/public/basic.ics';
+
+    // Orden de prioridad para proxies CORS:
+    // 1. corsproxy.io (URL cruda, SIN encodeURIComponent)
+    // 2. allorigins.win (URL codificada como query param)
+    const proxies = [
+      'https://corsproxy.io/?' + calendarUrl,
+      'https://api.allorigins.win/raw?url=' + encodeURIComponent(calendarUrl),
+    ];
+
+    for (const proxyUrl of proxies) {
+      try {
+        const response = await fetch(proxyUrl, { cache: 'no-store' });
+        if (!response.ok) {
+          console.warn('Proxy respondió con error:', proxyUrl, response.status);
+          continue;
+        }
+        const text = await response.text();
+        // Sanity-check: verificar que la respuesta es un iCal válido
+        if (!text.includes('BEGIN:VCALENDAR')) {
+          console.warn('Respuesta inválida del proxy (no es iCal):', proxyUrl);
+          continue;
+        }
+        bookedEvents = parseICal(text);
+        console.info('Calendario sincronizado con éxito desde:', proxyUrl, '(' + bookedEvents.length + ' eventos)');
+        calendarRebuildFns.forEach(fn => fn());
+        return; // Éxito — no continuar con más proxies
+      } catch (error) {
+        console.warn('Proxy fallido:', proxyUrl, error.message);
+      }
     }
+    console.error('No se pudo sincronizar el calendario con ningún proxy disponible.');
   }
 
   function isDateBooked(dateObj) {
@@ -1031,7 +1052,9 @@
   }
 
   function parseICal(icalText) {
-    const lines = icalText.split(/\r?\n/);
+    // RFC 5545 §3.1 — unfolding: líneas de continuación empiezan con espacio o tab
+    const unfolded = icalText.replace(/\r?\n[ \t]/g, '');
+    const lines = unfolded.split(/\r?\n/);
     const events = [];
     let currentEvent = null;
 
@@ -1046,29 +1069,48 @@
       } else if (currentEvent) {
         if (line.startsWith('DTSTART')) {
           const idx = line.indexOf(':');
-          const val = line.substring(idx + 1);
-          currentEvent.start = parseICalDate(val);
+          const params = line.substring(0, idx);       // ej. "DTSTART;TZID=America/Bogota"
+          const val   = line.substring(idx + 1).trim();
+          const hasTZID = params.includes('TZID');     // fecha con zona horaria explícita
+          currentEvent.start = parseICalDate(val, hasTZID);
         } else if (line.startsWith('DTEND')) {
           const idx = line.indexOf(':');
-          const val = line.substring(idx + 1);
-          currentEvent.end = parseICalDate(val);
+          const params = line.substring(0, idx);
+          const val   = line.substring(idx + 1).trim();
+          const hasTZID = params.includes('TZID');
+          currentEvent.end = parseICalDate(val, hasTZID);
         }
       }
     }
     return events;
   }
 
-  function parseICalDate(icalStr) {
+  function parseICalDate(icalStr, hasTZID) {
+    icalStr = icalStr.trim();
+    const isUTC = icalStr.endsWith('Z');          // termina en Z → es UTC puro
     const cleanStr = icalStr.replace(/[^0-9T]/g, '');
     const y = parseInt(cleanStr.substring(0, 4));
     const m = parseInt(cleanStr.substring(4, 6)) - 1;
     const d = parseInt(cleanStr.substring(6, 8));
+
     if (cleanStr.includes('T')) {
-      const h = parseInt(cleanStr.substring(9, 11)) || 0;
+      const h   = parseInt(cleanStr.substring(9,  11)) || 0;
       const min = parseInt(cleanStr.substring(11, 13)) || 0;
-      const s = parseInt(cleanStr.substring(13, 15)) || 0;
-      return new Date(Date.UTC(y, m, d, h, min, s));
+      const s   = parseInt(cleanStr.substring(13, 15)) || 0;
+
+      if (isUTC) {
+        // Fecha y hora en UTC — interpretación directa
+        return new Date(Date.UTC(y, m, d, h, min, s));
+      } else if (hasTZID) {
+        // Fecha con TZID explícito (ej. TZID=America/Bogota → UTC-5)
+        // Convertir hora local Bogotá → UTC sumando 5 horas
+        return new Date(Date.UTC(y, m, d, h + 5, min, s));
+      } else {
+        // Sin Z ni TZID: tratar como hora local del cliente
+        return new Date(y, m, d, h, min, s);
+      }
     } else {
+      // DATE-only (evento de día completo): medianoche local
       return new Date(y, m, d, 0, 0, 0);
     }
   }
