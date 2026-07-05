@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Disponibilidad en Tiempo Real | Cabaña Los Cañaguates</title>
+  <meta name="description"
+    content="Consulta la disponibilidad actual de la Cabaña Los Cañaguates en Sabanagrande, Atlántico. Calendario actualizado en tiempo real.">
+  <link rel="canonical" href="https://loscanaquates.com/disponibilidad">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Disponibilidad en Tiempo Real | Cabaña Los Cañaguates">
+  <meta property="og:description"
+    content="Consulta las fechas libres para pasadías o hospedajes en Cabaña Los Cañaguates. Sincronización automática de reservas.">
+  <meta property="og:image" content="assets/img/bg-hero.webp">
+  <meta property="og:url" content="https://loscanaquates.com/disponibilidad">
+  <meta property="og:type" content="website">
+
+  <!-- Hojas de Estilo Reutilizadas -->
+  <link rel="stylesheet" href="index.css?v=20260529">
+  <style>
+    /* Estilos personalizados para la página independiente de disponibilidad */
+    .disp-page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 16px;
+      background-color: var(--color-bg-light);
+    }
+
+    .disp-card {
+      background-color: var(--color-white);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+      padding: 40px 32px;
+      width: 100%;
+      max-width: 680px;
+      text-align: center;
+      border: 1px solid var(--color-border);
+    }
+
+    .disp-logo {
+      font-family: var(--font-sans);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--color-primary);
+      font-size: 20px;
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+
+    .disp-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 12px;
+    }
+
+    .disp-subtitle {
+      font-size: 15px;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      max-width: 500px;
+      margin: 0 auto 32px auto;
+    }
+
+    /* Sobrescribir contenedor de la landing para esta página limpia */
+    .disp-card .calendar-container {
+      box-shadow: none !important;
+      padding: 0 !important;
+      border: none !important;
+      background: transparent !important;
+      margin: 0 !important;
+    }
+
+    .disp-footer {
+      margin-top: 32px;
+      font-size: 13px;
+      color: var(--color-text-muted);
+      text-align: center;
+    }
+
+    .disp-footer a {
+      color: var(--color-primary);
+      font-weight: 500;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 576px) {
+      .disp-card {
+        padding: 24px 16px;
+      }
+      .disp-title {
+        font-size: 22px;
+      }
+      .disp-subtitle {
+        font-size: 13.5px;
+        margin-bottom: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="disp-page">
+    <div class="disp-card">
+      <span class="disp-logo">LOS CAÑAGUATES</span>
+      <h1 class="disp-title">Disponibilidad en Tiempo Real</h1>
+      <p class="disp-subtitle">
+        Consulta aquí la disponibilidad actual de la cabaña. Las fechas mostradas se sincronizan automáticamente con nuestro calendario de reservas.
+      </p>
+
+      <!-- Div del calendario donde index.js inyectará la grilla -->
+      <div id="custom-calendar-root"></div>
+
+      <!-- Leyenda del Calendario idéntica a la landing -->
+      <div class="calendar-legend" style="margin-top: 24px;">
+        <div class="calendar-legend-item">
+          <span class="legend-swatch legend-swatch--available"></span>
+          <span>Disponible</span>
+        </div>
+        <div class="calendar-legend-item">
+          <span class="legend-swatch legend-swatch--selected"></span>
+          <span>Seleccionado</span>
+        </div>
+        <div class="calendar-legend-item">
+          <span class="legend-swatch legend-swatch--blocked"
+            style="font-size: 11px; width: auto; height: auto; padding: 0 2px;">12</span>
+          <span>Reservado / Ocupado</span>
+        </div>
+      </div>
+
+      <!-- Botón de WhatsApp para reservar -->
+      <div class="text-center btn-cotizar-wrap" style="margin-top: 32px; display: flex; justify-content: center;">
+        <a href="#" id="btn-cotizar" class="btn btn-outline"
+          style="pointer-events: none; opacity: 0.4; max-width: 280px; width: 100%;">Selecciona tus fechas</a>
+      </div>
+    </div>
+
+    <footer class="disp-footer">
+      <p>© 2026 Cabaña Los Cañaguates. ¿Quieres ver toda la información de la cabaña? <a href="/">Volver al inicio</a>.</p>
+    </footer>
+  </main>
+
+  <!-- Script Principal Reutilizado (Sincroniza y renderiza automáticamente) -->
+  <script defer src="index.js?v=20260529"></script>
+</body>
+
+</html>
