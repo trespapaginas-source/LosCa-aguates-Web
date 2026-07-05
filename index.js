@@ -16,11 +16,8 @@
   });
   
   // Variables globales para la selección de fechas y plan
-  let selectionStart = new Date();
-  selectionStart.setHours(0, 0, 0, 0);
-  let selectionEnd = new Date();
-  selectionEnd.setDate(selectionEnd.getDate() + 1);
-  selectionEnd.setHours(0, 0, 0, 0);
+  let selectionStart = null;
+  let selectionEnd = null;
   let hoverDate = null;
   let selectedPlan = 'Hospedaje'; // Por defecto, el primer tab activo
   
